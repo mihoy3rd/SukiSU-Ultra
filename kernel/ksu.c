@@ -11,10 +11,6 @@
 #include "ksu.h"
 #include "throne_tracker.h"
 
-#ifdef CONFIG_KSU_SUSFS
-#include <linux/susfs.h>
-#endif
-
 #ifdef CONFIG_KSU_CMDLINE
 #include <linux/init.h>
 
@@ -78,10 +74,6 @@ int __init ksu_kernelsu_init(void)
 	pr_alert("**                                                         **");
 	pr_alert("**     NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE    **");
 	pr_alert("*************************************************************");
-#endif
-
-#ifdef CONFIG_KSU_SUSFS
-	susfs_init();
 #endif
 
 	ksu_core_init();
