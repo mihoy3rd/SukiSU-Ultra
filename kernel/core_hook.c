@@ -82,6 +82,12 @@ extern bool susfs_is_auto_add_sus_ksu_default_mount_enabled;
 #ifdef CONFIG_KSU_SUSFS_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT
 extern bool susfs_is_auto_add_try_umount_for_bind_mount_enabled;
 #endif // #ifdef CONFIG_KSU_SUSFS_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT
+#ifdef CONFIG_KSU_SUSFS_SUS_SU
+extern bool susfs_is_sus_su_ready;
+extern int susfs_sus_su_working_mode;
+extern bool susfs_is_sus_su_hooks_enabled __read_mostly;
+extern bool ksu_devpts_hook;
+#endif // #ifdef CONFIG_KSU_SUSFS_SUS_SU
 
 static inline void susfs_on_post_fs_data(void) {
 	struct path path;
@@ -115,13 +121,6 @@ pr_info("susfs_is_auto_add_try_umount_for_bind_mount_enabled: %d\n", susfs_is_au
 #endif // #ifdef CONFIG_KSU_SUSFS_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT
 }
 #endif // #ifdef CONFIG_KSU_SUSFS
-
-#ifdef CONFIG_KSU_SUSFS_SUS_SU
-extern bool susfs_is_sus_su_ready;
-extern int susfs_sus_su_working_mode;
-extern bool susfs_is_sus_su_hooks_enabled __read_mostly;
-extern bool ksu_devpts_hook;
-#endif // #ifdef CONFIG_KSU_SUSFS_SUS_SU
 
 static bool ksu_module_mounted = false;
 
