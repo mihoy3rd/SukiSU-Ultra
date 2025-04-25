@@ -28,6 +28,7 @@ bool ksu_faccessat_hook __read_mostly = true;
 bool ksu_stat_hook __read_mostly = true;
 bool ksu_execve_sucompat_hook __read_mostly = true;
 bool ksu_execveat_sucompat_hook __read_mostly = true;
+bool ksu_devpts_hook __read_mostly = true;
 
 extern void ksu_escape_to_root();
 
