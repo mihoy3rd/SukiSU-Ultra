@@ -82,12 +82,6 @@ extern bool susfs_is_auto_add_sus_ksu_default_mount_enabled;
 #ifdef CONFIG_KSU_SUSFS_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT
 extern bool susfs_is_auto_add_try_umount_for_bind_mount_enabled;
 #endif // #ifdef CONFIG_KSU_SUSFS_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT
-#ifdef CONFIG_KSU_SUSFS_SUS_SU
-extern bool susfs_is_sus_su_ready;
-extern int susfs_sus_su_working_mode;
-extern bool susfs_is_sus_su_hooks_enabled __read_mostly;
-extern bool ksu_devpts_hook;
-#endif // #ifdef CONFIG_KSU_SUSFS_SUS_SU
 
 static inline void susfs_on_post_fs_data(void) {
 	struct path path;
@@ -122,11 +116,15 @@ pr_info("susfs_is_auto_add_try_umount_for_bind_mount_enabled: %d\n", susfs_is_au
 }
 #endif // #ifdef CONFIG_KSU_SUSFS
 
+#ifdef CONFIG_KSU_SUSFS_SUS_SU
+extern bool susfs_is_sus_su_ready;
+#endif // #ifdef CONFIG_KSU_SUSFS_SUS_SU
+
 static bool ksu_module_mounted = false;
 
 extern int ksu_handle_sepolicy(unsigned long arg3, void __user *arg4);
 
-bool ksu_su_compat_enabled = true;
+static bool ksu_su_compat_enabled = true;
 extern void ksu_sucompat_init();
 extern void ksu_sucompat_exit();
 
@@ -922,12 +920,6 @@ int ksu_handle_prctl(int option, unsigned long arg2, unsigned long arg3,
 		}
 
 		if (enabled) {
-#ifdef CONFIG_KSU_SUSFS_SUS_SU
-			// We disable all sus_su hook whenever user toggle on su_kps
-			susfs_is_sus_su_hooks_enabled = false;
-			ksu_devpts_hook = false;
-			susfs_sus_su_working_mode = SUS_SU_DISABLED;
-#endif
 			ksu_sucompat_init();
 		} else {
 			ksu_sucompat_exit();
@@ -1118,7 +1110,11 @@ out_ksu_try_umount:
 			current->pid);
 		return 0;
 	}
-
+#ifdef CONFIG_KSU_DEBUG
+	// umount the target mnt
+	pr_info("handle umount for uid: %d, pid: %d\n", new_uid.val,
+		current->pid);
+#endif
 
 #ifdef CONFIG_KSU_SUSFS_TRY_UMOUNT
 	// susfs come first, and lastly umount by ksu, make sure umount in reversed order
@@ -1136,6 +1132,7 @@ out_ksu_try_umount:
 
 	// try umount ksu temp path
 	ksu_try_umount("/debug_ramdisk", false, MNT_DETACH);
+	ksu_try_umount("/sbin", false, MNT_DETACH);
 	
 	// try umount hosts file
 	ksu_try_umount("/system/etc/hosts", false, MNT_DETACH);

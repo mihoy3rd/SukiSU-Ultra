@@ -60,6 +60,7 @@ bool ksu_input_hook __read_mostly = true;
 #endif
 
 #ifdef CONFIG_KSU_SUSFS_SUS_SU
+bool ksu_devpts_hook = false;
 bool susfs_is_sus_su_ready = false;
 #endif // #ifdef CONFIG_KSU_SUSFS_SUS_SU
 

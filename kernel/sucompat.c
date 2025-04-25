@@ -10,9 +10,6 @@
 #include <linux/version.h>
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 11, 0)
 #include <linux/sched/task_stack.h>
-#ifdef CONFIG_KSU_SUSFS_SUS_SU
-#include <linux/susfs_def.h>
-#endif
 #else
 #include <linux/sched.h>
 #endif
@@ -372,39 +369,21 @@ void ksu_sucompat_exit()
 }
 
 #ifdef CONFIG_KSU_SUSFS_SUS_SU
-extern bool ksu_su_compat_enabled;
-bool ksu_devpts_hook = false;
-bool susfs_is_sus_su_hooks_enabled __read_mostly = false;
-int susfs_sus_su_working_mode = 0;
-
-static bool ksu_is_su_kps_enabled(void) {
-	int i;
-	for (i = 0; i < ARRAY_SIZE(su_kps); i++) {
-		if (su_kps[i]) {
-			return true;
-		}
-	}
-	return false;
-}
+extern bool ksu_devpts_hook;
 
 void ksu_susfs_disable_sus_su(void) {
-	susfs_is_sus_su_hooks_enabled = false;
+	enable_kprobe(&execve_kp);
+	enable_kprobe(&newfstatat_kp);
+	enable_kprobe(&faccessat_kp);
+	enable_kprobe(&pts_unix98_lookup_kp);
 	ksu_devpts_hook = false;
-	susfs_sus_su_working_mode = SUS_SU_DISABLED;
-	// Re-enable the su_kps for user, users need to toggle off the kprobe hooks again in ksu manager if they want it disabled.
-	if (!ksu_is_su_kps_enabled()) {
-		ksu_sucompat_init();
-		ksu_su_compat_enabled = true;
-	}
 }
 
 void ksu_susfs_enable_sus_su(void) {
-	if (ksu_is_su_kps_enabled()) {
-		ksu_sucompat_exit();
-		ksu_su_compat_enabled = false;
-	}
-	susfs_is_sus_su_hooks_enabled = true;
+	disable_kprobe(&execve_kp);
+	disable_kprobe(&newfstatat_kp);
+	disable_kprobe(&faccessat_kp);
+	disable_kprobe(&pts_unix98_lookup_kp);
 	ksu_devpts_hook = true;
-	susfs_sus_su_working_mode = SUS_SU_WITH_HOOKS;
 }
 #endif // CONFIG_KSU_SUSFS_SUS_SU
