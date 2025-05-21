@@ -189,15 +189,16 @@ DYNAMIC_STRUCT_BEGIN(task_struct)
     DEFINE_MEMBER(task_struct, security)
 #endif
 #endif
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0) 
     DEFINE_MEMBER(task_struct, thread)
+#endif
 DYNAMIC_STRUCT_END(task_struct)
 
 // =====================================================================================================================
 
 #define STRUCT_INFO(name) &(name##_info)
 
-static
-struct DynamicStructInfo* dynamic_struct_infos[] = {
+static struct DynamicStructInfo* dynamic_struct_infos[] = {
     STRUCT_INFO(mount),
     STRUCT_INFO(vfsmount),
     STRUCT_INFO(mnt_namespace),
