@@ -18,7 +18,7 @@ config KSU_DEBUG
 config KSU_MANUAL_HOOK
 	bool "Manual hooking GKI kernels without kprobes"
 	depends on KSU && KSU != m
-	default n
+	default y
 	help
 	  If enabled, Hook required KernelSU syscalls with manually-patched function.
 	  If disabled, Hook required KernelSU syscalls with Kernel-probe.
