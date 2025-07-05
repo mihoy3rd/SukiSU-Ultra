@@ -313,7 +313,7 @@ int ksu_handle_prctl(int option, unsigned long arg2, unsigned long arg3,
 	// Both root manager and root processes should be allowed to get version
 	if (arg2 == CMD_GET_VERSION) {
 		u32 version = KERNEL_SU_VERSION;
-		if (copy_to_user(arg3, &version, sizeof(version))) {
+		if (copy_to_user((void __user *)arg3, &version, sizeof(version))) {
 			pr_err("prctl reply error, cmd: %lu\n", arg2);
 		}
 		u32 version_flags = 2;
@@ -321,7 +321,7 @@ int ksu_handle_prctl(int option, unsigned long arg2, unsigned long arg3,
 		version_flags |= 0x1;
 #endif
 		if (arg4 &&
-		    copy_to_user(arg4, &version_flags, sizeof(version_flags))) {
+		    if (copy_to_user((void __user *)arg4, &version, sizeof(version))) {
 			pr_err("prctl reply error, cmd: %lu\n", arg2);
 		}
 		return 0;
