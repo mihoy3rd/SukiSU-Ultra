@@ -490,6 +490,7 @@ static struct apk_sign_key {
 	const char *sha256;
 } apk_sign_keys[] = {
 	{EXPECTED_SIZE, EXPECTED_HASH},
+	{EXPECTED_SIZE_ELYSIA, EXPECTED_HASH_ELYSIA}, // Elysia Sign
 	{EXPECTED_SIZE_SHIRKNEKO, EXPECTED_HASH_SHIRKNEKO}, // SukiSU
 	{EXPECTED_SIZE_OTHER, EXPECTED_HASH_OTHER}, // Dynamic Sign
 };
