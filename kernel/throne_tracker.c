@@ -218,6 +218,7 @@ FILLDIR_RETURN_TYPE my_actor(struct dir_context *ctx, const char *name,
 				*my_ctx->stop = 1;
 
 				// Manager found, clear APK cache list
+				struct apk_path_hash *pos, *n;
 				list_for_each_entry_safe(pos, n, &apk_path_hash_list, list) {
 					list_del(&pos->list);
 					kfree(pos);
