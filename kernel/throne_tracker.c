@@ -389,10 +389,10 @@ void track_throne()
 	struct uid_data *np;
 	struct uid_data *n;
 
-	// Check if any manager exists (traditional or dynamic)
+	// first, check if manager_uid exist!
 	bool manager_exist = false;
+	bool multi_manager_exist = false;
 	
-	// Check for traditional manager
 	list_for_each_entry (np, &uid_list, list) {
 		// if manager is installed in work profile, the uid in packages.list is still equals main profile
 		// don't delete it in this case!
@@ -404,10 +404,10 @@ void track_throne()
 	}
 	
 	// Check for dynamic managers
-	if (!manager_exist && ksu_is_dynamic_sign_enabled()) {
+	if (!multi_manager_exist && ksu_is_dynamic_sign_enabled()) {
 		list_for_each_entry (np, &uid_list, list) {
 			if (ksu_is_any_manager(np->uid)) {
-				manager_exist = true;
+				multi_manager_exist = true;
 				break;
 			}
 		}
@@ -422,11 +422,11 @@ void track_throne()
 		pr_info("Searching manager...\n");
 		search_manager("/data/app", 2, &uid_list);
 		pr_info("Search manager finished\n");
-	} else {
+	} else if (!multi_manager_exist && ksu_is_dynamic_sign_enabled()) {
 		// Always perform search when called from dynamic sign rescan
-		pr_info("Performing manager search (may be from dynamic sign rescan)\n");
+		pr_info("Dynamic sign enabled, performing additional manager search for multi-manager support\n");
 		search_manager("/data/app", 2, &uid_list);
-		pr_info("Manager search completed\n");
+		pr_info("Multi-manager search completed\n");
 	}
 
 prune:
